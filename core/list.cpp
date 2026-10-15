@@ -167,5 +167,13 @@ void printIndex(List* list, int index) {
 
 	if (current != nullptr) cout << current->value << endl;
 }
+
+void init(List* list) {
+	if (list == nullptr) return;
+
+	list->head = nullptr;
+	list->tail = nullptr;
+}
+
 }
 

@@ -159,3 +159,15 @@ func printIndex(list *List, index int) {
     fmt.Println(current.value)
   }
 }
+
+
+func initList(list *List) {
+  if list == nil {
+    return
+  }
+  list.head = nil
+  list.tail = nil
+}
+
+
+

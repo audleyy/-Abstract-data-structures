@@ -13,7 +13,7 @@ struct Array {
 	int size;
 };
 
-void initArray(Array& arr);
+void init(Array& arr);
 void pushIndex(Array& arr, int index, const string& value);
 void pushBack(Array& arr, const string& value);
 string get(Array& arr, int index);

@@ -47,7 +47,7 @@ func argumentCount(command string) int {
       return 1
     case "PUSHINDEX", "SET":
       return 2
-    case "LEN":
+    case "LEN", "INIT":
       return 0
     }
   case 'F', 'L':
@@ -56,21 +56,21 @@ func argumentCount(command string) int {
       return 1
     case "PUSHBEFORE", "PUSHAFTER":
       return 2
-    case "DELHEAD", "DELTAIL":
+    case "DELHEAD", "DELTAIL", "INIT":
       return 0
     }
   case 'Q':
     if operation == "PUSH" {
       return 1
     }
-    if operation == "POP" {
+    if operation == "POP" || operation == "INIT" {
       return 0
     }
   case 'S':
     if operation == "PUSH" {
       return 1
     }
-    if operation == "POP" || operation == "ISEMPTY" {
+    if operation == "POP" || operation == "ISEMPTY" || operation == "INIT" {
       return 0
     }
   }
@@ -132,7 +132,9 @@ func canCreate(command string) bool {
   return command == "MPUSH" || command == "MPUSHINDEX" ||
     command == "FPUSH" || command == "FPUSHHEAD" ||
     command == "LPUSH" || command == "LPUSHHEAD" ||
-    command == "QPUSH" || command == "SPUSH"
+    command == "QPUSH" || command == "SPUSH" ||
+    command == "MINIT" || command == "FINIT" || command == "LINIT" ||
+    command == "QINIT" || command == "SINIT"
 }
 
 func readFile(filename string, query Query) ([]string, []string, int, byte, error) {

@@ -14,6 +14,8 @@ struct Node {
 	Node* right;
 };
 
+void init(Node* &root);
+
 bool isRed(Node* root);
 void rotateLeft(Node* &root);
 void rotateRight(Node* &root);

@@ -19,6 +19,9 @@ func Execute(command string, number int, value string, reverse bool, values []st
     enqueue(&queue, value)
     changed = true
     result = value
+  case "QINIT":
+    initQueue(&queue)
+    changed = true
   case "QPOP":
     if queue.head == nil {
       return nil, "", false, errors.New("очередь пуста")

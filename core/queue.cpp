@@ -2,7 +2,7 @@
 
 namespace queue {
 
-void initQueue(Queue* queue) {
+void init(Queue* queue) {
 	queue->head = nullptr;
 	queue->tail = nullptr;
 }

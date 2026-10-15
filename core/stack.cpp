@@ -2,7 +2,7 @@
 
 namespace stack {
 
-void initStack(Stack* stack) {
+void init(Stack* stack) {
 	stack->head = nullptr;
 }
 

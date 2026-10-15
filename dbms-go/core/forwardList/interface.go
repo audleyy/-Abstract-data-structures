@@ -18,6 +18,7 @@ func nodeAt(head *Node, index int) *Node {
 
 func Execute(command string, number int, value string, reverse bool, values []string) ([]string, string, bool, error) {
   var head *Node
+  initForwardList(&head)
   for _, item := range values {
     addToTail(&head, item)
   }
@@ -35,6 +36,9 @@ func Execute(command string, number int, value string, reverse bool, values []st
     addToTail(&head, value)
     changed = true
     result = value
+  case "FINIT":
+    initForwardList(&head)
+    changed = true
   case "FPUSHHEAD":
     addToHead(&head, value)
     changed = true

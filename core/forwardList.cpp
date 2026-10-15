@@ -163,5 +163,8 @@ void printIndex(Node* head, int index) {
 	if (current != nullptr) cout << current->value << endl;
 }
 
+void init(Node* &head) {
+	head = nullptr;
 }
 
+}

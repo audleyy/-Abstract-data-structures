@@ -18,6 +18,7 @@ func nodeAt(list *List, index int) *Node {
 
 func Execute(command string, number int, value string, reverse bool, values []string) ([]string, string, bool, error) {
   list := List{}
+  initList(&list)
   for _, item := range values {
     addTail(&list, item)
   }
@@ -35,6 +36,9 @@ func Execute(command string, number int, value string, reverse bool, values []st
     addTail(&list, value)
     changed = true
     result = value
+  case "LINIT":
+    initList(&list)
+    changed = true
   case "LPUSHHEAD":
     addHead(&list, value)
     changed = true

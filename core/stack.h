@@ -17,7 +17,7 @@ struct Stack {
 	Node* head;
 };
 
-void initStack(Stack* stack);
+void init(Stack* stack);
 bool isEmpty(Stack* stack);
 void push(Stack* stack, const string& value);
 void pop(Stack* stack);

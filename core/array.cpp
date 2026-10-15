@@ -2,7 +2,7 @@
 
 namespace dynamic_array {
 
-void initArray(Array& arr) {
+void init(Array& arr) {
 	arr.data = nullptr;
 	arr.size = 0;
 }

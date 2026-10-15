@@ -139,3 +139,9 @@ func printIndex(head *Node, index int) {
     fmt.Println(current.value)
   }
 }
+
+
+func initForwardList(head **Node) {
+  *head = nil
+}
+

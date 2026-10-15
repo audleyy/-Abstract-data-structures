@@ -13,6 +13,8 @@ struct Node {
 	Node* next;
 };
 
+void init(Node* &head);
+
 void addToHead(Node* &head, const string& value);
 void addToTail(Node* &head, const string& value);
 void addAfter(Node* nodeFound, const string& value);

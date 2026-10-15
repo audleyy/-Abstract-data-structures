@@ -19,6 +19,8 @@ struct List {
 	Node* tail;
 };
 
+void init(List* list);
+
 void addTail(List* list, const string& value);
 void addHead(List* list, const string& value);
 Node* findNode(Node* list, const string& val);

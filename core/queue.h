@@ -18,7 +18,7 @@ struct Queue {
 	Node* tail;
 };
 
-void initQueue(Queue* queue);
+void init(Queue* queue);
 void enqueue(Queue* queue, const string& value);
 void dequeue(Queue* queue);
 void print(Queue* queue);

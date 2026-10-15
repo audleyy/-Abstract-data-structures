@@ -19,6 +19,9 @@ func Execute(command string, number int, value string, reverse bool, values []st
     push(&stack, value)
     changed = true
     result = value
+  case "SINIT":
+    initStack(&stack)
+    changed = true
   case "SPOP":
     if isEmpty(&stack) {
       return nil, "", false, errors.New("стек пуст")

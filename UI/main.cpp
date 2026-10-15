@@ -45,6 +45,7 @@ int argumentCount(const string& command) {
   if (command.empty()) return -1;
   char type = command[0];
   string operation = command.substr(1);
+  if (operation == "INIT") return 0;
 
   if (type == 'M') {
     if (operation == "PUSH" || operation == "DEL" || operation == "GET") return 1;
@@ -115,7 +116,9 @@ bool canCreate(const string& command) {
   return command == "MPUSH" || command == "MPUSHINDEX" ||
        command == "FPUSH" || command == "FPUSHHEAD" ||
        command == "LPUSH" || command == "LPUSHHEAD" ||
-       command == "QPUSH" || command == "SPUSH" || command == "TINSERT";
+       command == "QPUSH" || command == "SPUSH" || command == "TINSERT" ||
+       command == "MINIT" || command == "FINIT" || command == "LINIT" ||
+       command == "QINIT" || command == "SINIT" || command == "TINIT";
 }
 
 bool readFile(const string& filename, const Query& query, vector<string>& lines, vector<string>& values, int& position, char& type, string& treeData) {
@@ -228,7 +231,12 @@ bool executeArray(const Query& query, bool& changed) {
 
   const string& command = query.command;
   int index = query.number;
-  if (command == "MPUSH") {
+  if (command == "MINIT") {
+    destroy(currentArray);
+    init(currentArray);
+    changed = true;
+    return true;
+  } else if (command == "MPUSH") {
     pushBack(currentArray, query.value);
     changed = true;
   } else if (command == "MPUSHINDEX") {
@@ -255,7 +263,12 @@ bool executeForwardList(const Query& query, bool& changed) {
   using namespace singly_linked_list;
 
   const string& command = query.command;
-  if (command == "FPUSH") addToTail(forwardHead, query.value);
+  if (command == "FINIT") {
+    while (forwardHead != nullptr) deleteHead(forwardHead);
+    init(forwardHead);
+    changed = true;
+    return true;
+  } else if (command == "FPUSH") addToTail(forwardHead, query.value);
   else if (command == "FPUSHHEAD") addToHead(forwardHead, query.value);
   else if (command == "FSEARCH") {
     auto found = findNode(forwardHead, query.value);
@@ -293,7 +306,12 @@ bool executeDoublyLinkedList(const Query& query, bool& changed) {
   using namespace doubly_linked_list;
 
   const string& command = query.command;
-  if (command == "LPUSH") addTail(&currentList, query.value);
+  if (command == "LINIT") {
+    while (currentList.head != nullptr) delHead(&currentList);
+    init(&currentList);
+    changed = true;
+    return true;
+  } else if (command == "LPUSH") addTail(&currentList, query.value);
   else if (command == "LPUSHHEAD") addHead(&currentList, query.value);
   else if (command == "LSEARCH") {
     auto found = findNode(currentList.head, query.value);
@@ -333,6 +351,12 @@ bool executeDoublyLinkedList(const Query& query, bool& changed) {
 }
 
 bool executeQueue(const Query& query, bool& changed) {
+  if (query.command == "QINIT") {
+    while (currentQueue.head != nullptr) ::queue::dequeue(&currentQueue);
+    ::queue::init(&currentQueue);
+    changed = true;
+    return true;
+  }
   if (query.command == "QPUSH") ::queue::enqueue(&currentQueue, query.value);
   else {
     if (currentQueue.head == nullptr) return false;
@@ -345,6 +369,12 @@ bool executeQueue(const Query& query, bool& changed) {
 }
 
 bool executeStack(const Query& query, bool& changed) {
+  if (query.command == "SINIT") {
+    while (!::stack::isEmpty(&currentStack)) ::stack::pop(&currentStack);
+    ::stack::init(&currentStack);
+    changed = true;
+    return true;
+  }
   if (query.command == "SISEMPTY") {
     cout << (::stack::isEmpty(&currentStack) ? "TRUE\n" : "FALSE\n");
     return true;
@@ -359,8 +389,15 @@ bool executeStack(const Query& query, bool& changed) {
   return true;
 }
 
+void clearTree(red_black_tree::Node* root);
 bool executeTree(const Query& query, bool& changed) {
   using namespace red_black_tree;
+  if (query.command == "TINIT") {
+    clearTree(treeRoot);
+    init(treeRoot);
+    changed = true;
+    return true;
+  }
   if (query.command == "TGET") cout << (searchElement(treeRoot, query.number) ? "TRUE\n" : "FALSE\n");
   else if (query.command == "TINSERT") {
     changed = searchElement(treeRoot, query.number) == nullptr;
@@ -456,12 +493,17 @@ void clearTree(red_black_tree::Node* root) {
 
 void clearStructures() {
   dynamic_array::destroy(currentArray);
+  dynamic_array::init(currentArray);
   while (forwardHead != nullptr) singly_linked_list::deleteHead(forwardHead);
+  singly_linked_list::init(forwardHead);
   while (currentList.head != nullptr) doubly_linked_list::delHead(&currentList);
+  doubly_linked_list::init(&currentList);
   while (currentQueue.head != nullptr) ::queue::dequeue(&currentQueue);
+  ::queue::init(&currentQueue);
   while (!::stack::isEmpty(&currentStack)) ::stack::pop(&currentStack);
+  ::stack::init(&currentStack);
   clearTree(treeRoot);
-  treeRoot = nullptr;
+  ::red_black_tree::init(treeRoot);
 }
 
 void printResult(const Query& query, bool changed, const string& removedValue) {

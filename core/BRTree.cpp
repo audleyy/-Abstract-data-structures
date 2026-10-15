@@ -249,4 +249,8 @@ void printTree(Node* root) {
 	printTree(root->right);
 }
 
+void init(Node* &root) {
+	root = nullptr;
+}
+
 }

@@ -21,6 +21,10 @@ func Execute(command string, number int, value string, reverse bool, values []st
     pushBack(&arr, value)
     changed = true
     result = value
+  case "MINIT":
+    destroy(&arr)
+    initArray(&arr)
+    changed = true
   case "MLEN":
     result = fmt.Sprint(length(&arr))
   case "MPUSHINDEX":
