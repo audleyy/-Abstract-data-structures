@@ -3,7 +3,7 @@ package doubly_linked_list
 import "fmt"
 
 type Node struct {
-  value int
+  value string
   next  *Node
   prev  *Node
 }
@@ -13,7 +13,7 @@ type List struct {
   tail *Node
 }
 
-func addTail(list *List, value int) {
+func addTail(list *List, value string) {
   newNode := &Node{value, nil, nil}
   if list.head == nil {
     list.head = newNode
@@ -25,7 +25,7 @@ func addTail(list *List, value int) {
   }
 }
 
-func addHead(list *List, value int) {
+func addHead(list *List, value string) {
   newNode := &Node{value, nil, nil}
   if list.head == nil {
     list.head = newNode
@@ -37,9 +37,9 @@ func addHead(list *List, value int) {
   }
 }
 
-func findNode(list *Node, val int) *Node {
+func findNode(list *Node, val string) *Node {
   current := list
-  for current.next != nil {
+  for current != nil {
     if current.value == val {
       return current
     }
@@ -48,7 +48,7 @@ func findNode(list *Node, val int) *Node {
   return nil
 }
 
-func addAfter(list *List, nodeFound *Node, value int) {
+func addAfter(list *List, nodeFound *Node, value string) {
   newNode := &Node{value, nil, nil}
   if nodeFound.next == nil {
     nodeFound.next = newNode
@@ -62,7 +62,7 @@ func addAfter(list *List, nodeFound *Node, value int) {
   }
 }
 
-func addBefore(list *List, nodeFound *Node, value int) {
+func addBefore(list *List, nodeFound *Node, value string) {
   newNode := &Node{value, nil, nil}
   if nodeFound.prev == nil {
     newNode.next = nodeFound
@@ -133,7 +133,7 @@ func delBefore(list *List, nodeFound *Node) {
 func printRegular(list *List) {
   current := list.head
   for current != nil {
-    fmt.Printf("%d ", current.value)
+    fmt.Printf("%s ", current.value)
     current = current.next
   }
   fmt.Println()
@@ -145,7 +145,7 @@ func printReverse(list *List) {
   }
   current := list.tail
   for current != nil {
-    fmt.Printf("%d ", current.value)
+    fmt.Printf("%s ", current.value)
     current = current.prev
   }
 }
@@ -155,5 +155,7 @@ func printIndex(list *List, index int) {
   for i := 0; i < index; i++ {
     current = current.next
   }
-  fmt.Println(current.value)
+  if current != nil {
+    fmt.Println(current.value)
+  }
 }

@@ -3,17 +3,17 @@ package singly_linked_list
 import "fmt"
 
 type Node struct {
-  value int
+  value string
   next  *Node
 }
 
-func addToHead(head **Node, value int) {
+func addToHead(head **Node, value string) {
   newNode := &Node{value, nil}
   newNode.next = *head
   *head = newNode
 }
 
-func addToTail(head **Node, value int) {
+func addToTail(head **Node, value string) {
   newNode := &Node{value, nil}
   current := *head
   if *head == nil {
@@ -26,13 +26,13 @@ func addToTail(head **Node, value int) {
   current.next = newNode
 }
 
-func addAfter(nodeFound *Node, value int) {
+func addAfter(nodeFound *Node, value string) {
   newNode := &Node{value, nil}
   newNode.next = nodeFound.next
   nodeFound.next = newNode
 }
 
-func addBefore(head **Node, nodeFound *Node, value int) {
+func addBefore(head **Node, nodeFound *Node, value string) {
   newNode := &Node{value, nil}
   current := *head
   if nodeFound == *head {
@@ -47,7 +47,7 @@ func addBefore(head **Node, nodeFound *Node, value int) {
   current.next = newNode
 }
 
-func findNode(head *Node, val int) *Node {
+func findNode(head *Node, val string) *Node {
   current := head
   for current != nil {
     if current.value == val {
@@ -116,7 +116,7 @@ func deleteCurrent(head **Node, nodeFound *Node) {
 func printRegular(head *Node) {
   current := head
   for current != nil {
-    fmt.Printf("%d ", current.value)
+    fmt.Printf("%s ", current.value)
     current = current.next
   }
   fmt.Println()
@@ -127,7 +127,7 @@ func printReverse(head *Node) {
     return
   }
   printReverse(head.next)
-  fmt.Printf("%d ", head.value)
+  fmt.Printf("%s ", head.value)
 }
 
 func printIndex(head *Node, index int) {
@@ -135,5 +135,7 @@ func printIndex(head *Node, index int) {
   for i := 0; i < index && current != nil; i++ {
     current = current.next
   }
-  fmt.Println(current.value)
+  if current != nil {
+    fmt.Println(current.value)
+  }
 }

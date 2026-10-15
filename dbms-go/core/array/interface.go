@@ -5,11 +5,11 @@ import (
   "fmt"
 )
 
-func Execute(command string, number int, number2 int, reverse bool, values []int) ([]int, string, bool, error) {
+func Execute(command string, number int, value string, reverse bool, values []string) ([]string, string, bool, error) {
   arr := Array{}
   initArray(&arr)
-  for _, value := range values {
-    pushBack(&arr, value)
+  for _, item := range values {
+    pushBack(&arr, item)
   }
   defer destroy(&arr)
   changed := false
@@ -18,29 +18,29 @@ func Execute(command string, number int, number2 int, reverse bool, values []int
   case "PRINT":
     print(arr)
   case "MPUSH":
-    pushBack(&arr, number)
+    pushBack(&arr, value)
     changed = true
-    result = fmt.Sprint(number)
+    result = value
   case "MLEN":
     result = fmt.Sprint(length(&arr))
   case "MPUSHINDEX":
     if number < 0 || number >= arr.size {
       return nil, "", false, errors.New("индекс вставки должен быть меньше размера массива")
     }
-    pushIndex(&arr, number, number2)
+    pushIndex(&arr, number, value)
     changed = true
-    result = fmt.Sprint(number2)
+    result = value
   default:
     if number < 0 || number >= arr.size {
       return nil, "", false, errors.New("неверный индекс массива")
     }
     switch command {
     case "MGET":
-      result = fmt.Sprint(get(&arr, number))
+      result = get(&arr, number)
     case "MSET":
-      changed = arr.data[number] != number2
-      replace(&arr, number, number2)
-      result = fmt.Sprint(number2)
+      changed = arr.data[number] != value
+      replace(&arr, number, value)
+      result = value
     case "MDEL":
       remove(&arr, number)
       changed = true
@@ -48,7 +48,7 @@ func Execute(command string, number int, number2 int, reverse bool, values []int
       return nil, "", false, errors.New("неизвестная команда массива")
     }
   }
-  saved := make([]int, arr.size)
+  saved := make([]string, arr.size)
   for i := 0; i < arr.size; i++ {
     saved[i] = arr.data[i]
   }

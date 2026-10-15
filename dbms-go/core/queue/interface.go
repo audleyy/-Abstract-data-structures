@@ -2,14 +2,13 @@ package queue
 
 import (
   "errors"
-  "fmt"
 )
 
-func Execute(command string, number int, number2 int, reverse bool, values []int) ([]int, string, bool, error) {
+func Execute(command string, number int, value string, reverse bool, values []string) ([]string, string, bool, error) {
   queue := Queue{}
   initQueue(&queue)
-  for _, value := range values {
-    enqueue(&queue, value)
+  for _, item := range values {
+    enqueue(&queue, item)
   }
   changed := false
   result := ""
@@ -17,20 +16,20 @@ func Execute(command string, number int, number2 int, reverse bool, values []int
   case "PRINT":
     print(&queue)
   case "QPUSH":
-    enqueue(&queue, number)
+    enqueue(&queue, value)
     changed = true
-    result = fmt.Sprint(number)
+    result = value
   case "QPOP":
     if queue.head == nil {
       return nil, "", false, errors.New("очередь пуста")
     }
-    result = fmt.Sprint(queue.head.value)
+    result = queue.head.value
     dequeue(&queue)
     changed = true
   default:
     return nil, "", false, errors.New("неизвестная команда очереди")
   }
-  saved := []int{}
+  saved := []string{}
   for current := queue.head; current != nil; current = current.next {
     saved = append(saved, current.value)
   }

@@ -2,14 +2,14 @@
 
 namespace singly_linked_list {
 
-void addToHead(Node* &head, int value) {
+void addToHead(Node* &head, const string& value) {
 	Node* newNode = new Node{value, nullptr};
 
 	newNode->next = head;
 	head = newNode;
 }
 
-void addToTail(Node* &head, int value) {
+void addToTail(Node* &head, const string& value) {
 	Node* newNode = new Node{value, nullptr};
 	Node* current = head;
 
@@ -25,14 +25,14 @@ void addToTail(Node* &head, int value) {
 	current->next = newNode;
 }
 
-void addAfter(Node* nodeFound, int value) {
+void addAfter(Node* nodeFound, const string& value) {
 	Node* newNode = new Node{value, nullptr};
 
 	newNode->next = nodeFound->next;
 	nodeFound->next = newNode;
 }
 
-void addBefore(Node* &head, Node* nodeFound, int value) {
+void addBefore(Node* &head, Node* nodeFound, const string& value) {
 	Node* newNode = new Node{value, nullptr};
 	Node* current = head;
 
@@ -50,7 +50,7 @@ void addBefore(Node* &head, Node* nodeFound, int value) {
 	current->next = newNode;
 }
 
-Node* findNode(Node* head, int val) {
+Node* findNode(Node* head, const string& val) {
 	Node* current = head;
 
 	while (current != nullptr) {
@@ -160,7 +160,8 @@ void printIndex(Node* head, int index) {
 		current = current->next;
 	}
 
-	cout << current->value << endl;
+	if (current != nullptr) cout << current->value << endl;
 }
 
 }
+

@@ -10,7 +10,7 @@ bool isEmpty(Stack* stack) {
 	return stack->head == nullptr;
 }
 
-void push(Stack* stack, int value) {
+void push(Stack* stack, const string& value) {
 	Node* newNode = new Node{value, nullptr};
 
 	newNode->next = stack->head;

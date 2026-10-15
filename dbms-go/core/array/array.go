@@ -3,7 +3,7 @@ package dynamic_array
 import "fmt"
 
 type Array struct {
-  data []int
+  data []string
   size int
 }
 
@@ -12,11 +12,11 @@ func initArray(arr *Array) {
   arr.size = 0
 }
 
-func pushIndex(arr *Array, index int, value int) {
+func pushIndex(arr *Array, index int, value string) {
   if index < 0 || index >= arr.size {
     return
   }
-  newData := make([]int, arr.size+1)
+  newData := make([]string, arr.size+1)
   for i := 0; i < index; i++ {
     newData[i] = arr.data[i]
   }
@@ -28,8 +28,8 @@ func pushIndex(arr *Array, index int, value int) {
   arr.size++
 }
 
-func pushBack(arr *Array, value int) {
-  newData := make([]int, arr.size+1)
+func pushBack(arr *Array, value string) {
+  newData := make([]string, arr.size+1)
   for i := 0; i < arr.size; i++ {
     newData[i] = arr.data[i]
   }
@@ -38,9 +38,9 @@ func pushBack(arr *Array, value int) {
   arr.size++
 }
 
-func get(arr *Array, index int) int {
+func get(arr *Array, index int) string {
   if index < 0 || index >= arr.size {
-    return -1
+    return ""
   }
   return arr.data[index]
 }
@@ -49,7 +49,7 @@ func remove(arr *Array, index int) {
   if index < 0 || index >= arr.size {
     return
   }
-  newData := make([]int, arr.size-1)
+  newData := make([]string, arr.size-1)
   j := 0
   for i := 0; i < arr.size; i++ {
     if i != index {
@@ -61,7 +61,7 @@ func remove(arr *Array, index int) {
   arr.size--
 }
 
-func replace(arr *Array, index int, value int) {
+func replace(arr *Array, index int, value string) {
   if index < 0 || index >= arr.size {
     return
   }
@@ -79,7 +79,7 @@ func destroy(arr *Array) {
 
 func print(arr Array) {
   for i := 0; i < arr.size; i++ {
-    fmt.Printf("%d ", arr.data[i])
+    fmt.Printf("%s ", arr.data[i])
   }
   fmt.Println()
 }

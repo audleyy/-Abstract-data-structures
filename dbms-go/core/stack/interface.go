@@ -2,10 +2,9 @@ package stack
 
 import (
   "errors"
-  "fmt"
 )
 
-func Execute(command string, number int, number2 int, reverse bool, values []int) ([]int, string, bool, error) {
+func Execute(command string, number int, value string, reverse bool, values []string) ([]string, string, bool, error) {
   stack := Stack{}
   initStack(&stack)
   for i := len(values) - 1; i >= 0; i-- {
@@ -17,14 +16,14 @@ func Execute(command string, number int, number2 int, reverse bool, values []int
   case "PRINT":
     print(&stack)
   case "SPUSH":
-    push(&stack, number)
+    push(&stack, value)
     changed = true
-    result = fmt.Sprint(number)
+    result = value
   case "SPOP":
     if isEmpty(&stack) {
       return nil, "", false, errors.New("стек пуст")
     }
-    result = fmt.Sprint(stack.head.value)
+    result = stack.head.value
     pop(&stack)
     changed = true
   case "SISEMPTY":
@@ -36,7 +35,7 @@ func Execute(command string, number int, number2 int, reverse bool, values []int
   default:
     return nil, "", false, errors.New("неизвестная команда стека")
   }
-  saved := []int{}
+  saved := []string{}
   for current := stack.head; current != nil; current = current.next {
     saved = append(saved, current.value)
   }

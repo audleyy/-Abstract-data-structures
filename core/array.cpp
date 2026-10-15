@@ -7,10 +7,10 @@ void initArray(Array& arr) {
 	arr.size = 0;
 }
 
-void pushIndex(Array& arr, int index, int value) {
+void pushIndex(Array& arr, int index, const string& value) {
 	if (index < 0 || index >= arr.size) return;
 
-	int* newData = new int[arr.size + 1];
+	string* newData = new string[arr.size + 1];
 	
 	for (int i = 0; i < index; ++i) {
 		newData[i] = arr.data[i];
@@ -27,8 +27,8 @@ void pushIndex(Array& arr, int index, int value) {
 	arr.size++;
 }
 
-void pushBack(Array& arr, int value) {
-	int* newData = new int[arr.size + 1];
+void pushBack(Array& arr, const string& value) {
+	string* newData = new string[arr.size + 1];
 
 	for (int i = 0; i < arr.size; ++i) {
 		newData[i] = arr.data[i];
@@ -41,15 +41,15 @@ void pushBack(Array& arr, int value) {
 	arr.size++;
 }
 
-int get(Array& arr, int index) {
-	if (index < 0 || index >= arr.size) return -1;
+string get(Array& arr, int index) {
+	if (index < 0 || index >= arr.size) return string();
 	return arr.data[index];
 }
 
 void remove(Array& arr, int index) {
 	if (index < 0 || index >= arr.size) return;
 
-	int* newData = new int[arr.size - 1];
+	string* newData = new string[arr.size - 1];
 
 	for (int i = 0, j = 0; i < arr.size; ++i) {
 		if (i != index) {
@@ -63,7 +63,7 @@ void remove(Array& arr, int index) {
 	arr.size--;
 }
 
-void replace(Array& arr, int index, int value) {
+void replace(Array& arr, int index, const string& value) {
 	if (index < 0 || index >= arr.size) return;
 
 	arr.data[index] = value;

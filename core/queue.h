@@ -2,13 +2,14 @@
 #define QUEUE_H
 
 #include <iostream>
+#include <string>
 
 using namespace std;
 
-namespace	queue {
+namespace queue {
 
 struct Node {
-	int value;
+	string value;
 	Node* next;
 };
 
@@ -18,7 +19,7 @@ struct Queue {
 };
 
 void initQueue(Queue* queue);
-void enqueue(Queue* queue, int value);
+void enqueue(Queue* queue, const string& value);
 void dequeue(Queue* queue);
 void print(Queue* queue);
 

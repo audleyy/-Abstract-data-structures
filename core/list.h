@@ -2,13 +2,14 @@
 #define LIST_H
 
 #include <iostream>
+#include <string>
 
 using namespace std;
 
 namespace doubly_linked_list {
 
 struct Node {
-	int value;
+	string value;
 	Node* next;
 	Node* prev;
 };
@@ -18,11 +19,11 @@ struct List {
 	Node* tail;
 };
 
-void addTail(List* list, int value);
-void addHead(List* list, int value);
-Node* findNode(Node* list, int val);
-void addAfter(List* list, Node* nodeFound, int value);
-void addBefore(List* list, Node* nodeFound, int value);
+void addTail(List* list, const string& value);
+void addHead(List* list, const string& value);
+Node* findNode(Node* list, const string& val);
+void addAfter(List* list, Node* nodeFound, const string& value);
+void addBefore(List* list, Node* nodeFound, const string& value);
 void delHead(List* list);
 void delTail(List* list);
 void delAfter(List* list, Node* nodeFound);

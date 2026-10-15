@@ -18,7 +18,7 @@ type Query struct {
   command string
   name    string
   number  int
-  number2 int
+  value   string
   reverse bool
 }
 
@@ -77,6 +77,17 @@ func argumentCount(command string) int {
   return -1
 }
 
+func firstArgumentIsNumber(command string) bool {
+  if command == "" {
+    return true
+  }
+  operation := command[1:]
+  if operation == "PUSH" || operation == "PUSHHEAD" || operation == "SEARCH" {
+    return false
+  }
+  return true
+}
+
 func parseQuery(text string) (Query, error) {
   query := Query{}
   parts := strings.Fields(text)
@@ -100,18 +111,19 @@ func parseQuery(text string) (Query, error) {
   if len(parts) != count+2 {
     return query, errors.New("неверное количество аргументов")
   }
-  var err error
   if count >= 1 {
-    query.number, err = strconv.Atoi(parts[2])
-    if err != nil {
-      return query, errors.New("ожидалось целое число")
+    if firstArgumentIsNumber(query.command) {
+      number, err := strconv.Atoi(parts[2])
+      if err != nil {
+        return query, errors.New("ожидалось целое число")
+      }
+      query.number = number
+    } else {
+      query.value = parts[2]
     }
   }
   if count == 2 {
-    query.number2, err = strconv.Atoi(parts[3])
-    if err != nil {
-      return query, errors.New("ожидалось второе целое число")
-    }
+    query.value = parts[3]
   }
   return query, nil
 }
@@ -123,9 +135,9 @@ func canCreate(command string) bool {
     command == "QPUSH" || command == "SPUSH"
 }
 
-func readFile(filename string, query Query) ([]string, []int, int, byte, error) {
+func readFile(filename string, query Query) ([]string, []string, int, byte, error) {
   lines := []string{}
-  values := []int{}
+  values := []string{}
   position := -1
   var kind byte
   if query.command != "PRINT" {
@@ -151,13 +163,7 @@ func readFile(filename string, query Query) ([]string, []int, int, byte, error) 
     }
     kind = parts[0][0]
     position = i
-    for _, token := range parts[2:] {
-      value, err := strconv.Atoi(token)
-      if err != nil {
-        return nil, nil, position, kind, errors.New("неверное число в файле")
-      }
-      values = append(values, value)
-    }
+    values = append([]string{}, parts[2:]...)
   }
   if position == -1 && !canCreate(query.command) {
     return nil, nil, position, kind, errors.New("структура не найдена")
@@ -171,31 +177,31 @@ func readFile(filename string, query Query) ([]string, []int, int, byte, error) 
   return lines, values, position, kind, nil
 }
 
-func executeCommand(kind byte, query Query, values []int) ([]int, string, bool, error) {
+func executeCommand(kind byte, query Query, values []string) ([]string, string, bool, error) {
   switch kind {
   case 'M':
-    return dynamic_array.Execute(query.command, query.number, query.number2, query.reverse, values)
+    return dynamic_array.Execute(query.command, query.number, query.value, query.reverse, values)
   case 'F':
-    return singly_linked_list.Execute(query.command, query.number, query.number2, query.reverse, values)
+    return singly_linked_list.Execute(query.command, query.number, query.value, query.reverse, values)
   case 'L':
-    return doubly_linked_list.Execute(query.command, query.number, query.number2, query.reverse, values)
+    return doubly_linked_list.Execute(query.command, query.number, query.value, query.reverse, values)
   case 'Q':
-    return queue.Execute(query.command, query.number, query.number2, query.reverse, values)
+    return queue.Execute(query.command, query.number, query.value, query.reverse, values)
   case 'S':
-    return stack.Execute(query.command, query.number, query.number2, query.reverse, values)
+    return stack.Execute(query.command, query.number, query.value, query.reverse, values)
   }
   return nil, "", false, errors.New("неизвестный тип")
 }
 
-func structureToString(kind byte, name string, values []int) string {
+func structureToString(kind byte, name string, values []string) string {
   line := string(kind) + " " + name
   for _, value := range values {
-    line += " " + strconv.Itoa(value)
+    line += " " + value
   }
   return line
 }
 
-func writeFile(filename string, lines []string, position int, kind byte, name string, values []int) error {
+func writeFile(filename string, lines []string, position int, kind byte, name string, values []string) error {
   updated := structureToString(kind, name, values)
   if position == -1 {
     lines = append(lines, updated)

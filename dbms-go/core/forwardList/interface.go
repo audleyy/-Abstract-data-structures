@@ -16,10 +16,10 @@ func nodeAt(head *Node, index int) *Node {
   return current
 }
 
-func Execute(command string, number int, number2 int, reverse bool, values []int) ([]int, string, bool, error) {
+func Execute(command string, number int, value string, reverse bool, values []string) ([]string, string, bool, error) {
   var head *Node
-  for _, value := range values {
-    addToTail(&head, value)
+  for _, item := range values {
+    addToTail(&head, item)
   }
   changed := false
   result := ""
@@ -32,15 +32,15 @@ func Execute(command string, number int, number2 int, reverse bool, values []int
       printRegular(head)
     }
   case "FPUSH":
-    addToTail(&head, number)
+    addToTail(&head, value)
     changed = true
-    result = fmt.Sprint(number)
+    result = value
   case "FPUSHHEAD":
-    addToHead(&head, number)
+    addToHead(&head, value)
     changed = true
-    result = fmt.Sprint(number)
+    result = value
   case "FSEARCH":
-    found := findNode(head, number)
+    found := findNode(head, value)
     index := -1
     if found != nil {
       index = 0
@@ -68,13 +68,13 @@ func Execute(command string, number int, number2 int, reverse bool, values []int
     case "FGET":
       printIndex(head, number)
     case "FPUSHBEFORE":
-      addBefore(&head, nodeFound, number2)
+      addBefore(&head, nodeFound, value)
       changed = true
-      result = fmt.Sprint(number2)
+      result = value
     case "FPUSHAFTER":
-      addAfter(nodeFound, number2)
+      addAfter(nodeFound, value)
       changed = true
-      result = fmt.Sprint(number2)
+      result = value
     case "FDEL":
       deleteCurrent(&head, nodeFound)
       changed = true
@@ -94,7 +94,7 @@ func Execute(command string, number int, number2 int, reverse bool, values []int
       return nil, "", false, errors.New("неизвестная команда списка")
     }
   }
-  saved := []int{}
+  saved := []string{}
   for current := head; current != nil; current = current.next {
     saved = append(saved, current.value)
   }

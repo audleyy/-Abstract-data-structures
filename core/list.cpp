@@ -2,7 +2,7 @@
 
 namespace doubly_linked_list {
 
-void addTail(List* list, int value) {
+void addTail(List* list, const string& value) {
 	Node* newNode = new Node{value, nullptr, nullptr};
 
 	if (list->head == nullptr) {
@@ -15,7 +15,7 @@ void addTail(List* list, int value) {
 	}
 }
 
-void addHead(List* list, int value) {
+void addHead(List* list, const string& value) {
 	Node* newNode = new Node{value, nullptr, nullptr};
 
 	if (list->head == nullptr) {
@@ -28,10 +28,10 @@ void addHead(List* list, int value) {
 	}
 }
 
-Node* findNode(Node* list, int val) {
+Node* findNode(Node* list, const string& val) {
 	Node* current = list;
 
-	while (current->next != nullptr) {
+	while (current != nullptr) {
 		if (current->value == val) return current;
 		current = current->next;
 	}
@@ -39,7 +39,7 @@ Node* findNode(Node* list, int val) {
 	return nullptr;
 }
 
-void addAfter(List* list, Node* nodeFound, int value) {
+void addAfter(List* list, Node* nodeFound, const string& value) {
 	Node* newNode = new Node{value, nullptr, nullptr};
 
 	if (nodeFound->next == nullptr) {
@@ -55,7 +55,7 @@ void addAfter(List* list, Node* nodeFound, int value) {
 	}
 }
 
-void addBefore(List* list, Node* nodeFound, int value) {
+void addBefore(List* list, Node* nodeFound, const string& value) {
 	Node* newNode = new Node{value, nullptr, nullptr};
 
 	if (nodeFound->prev == nullptr) {
@@ -156,6 +156,7 @@ void printReverse(List* list) {
     cout << current->value << " ";
     current = current->prev;
   }
+  cout << endl;
 }
 
 void printIndex(List* list, int index) {
@@ -164,8 +165,7 @@ void printIndex(List* list, int index) {
 		current = current->next;
 	}
 
-	cout << current->value << endl;
+	if (current != nullptr) cout << current->value << endl;
+}
 }
 
-
-}

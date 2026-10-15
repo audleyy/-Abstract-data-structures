@@ -2,26 +2,27 @@
 #define ARRAY_H
 
 #include <iostream>
+#include <string>
 
 using namespace std;
 
 namespace dynamic_array {
 
 struct Array {
-	int* data;
+	string* data;
 	int size;
 };
 
 void initArray(Array& arr);
-void pushIndex(Array& arr, int index, int value);
-void pushBack(Array& arr, int value);
-int get(Array& arr, int index) ;
+void pushIndex(Array& arr, int index, const string& value);
+void pushBack(Array& arr, const string& value);
+string get(Array& arr, int index);
 void remove(Array& arr, int index);
-void replace(Array& arr, int index, int value);
+void replace(Array& arr, int index, const string& value);
 int length(Array& arr);
 void destroy(Array& arr);
 void print(Array arr);
 
 }
 
-#endif 
+#endif

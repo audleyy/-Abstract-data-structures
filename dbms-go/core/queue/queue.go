@@ -3,7 +3,7 @@ package queue
 import "fmt"
 
 type Node struct {
-  value int
+  value string
   next  *Node
 }
 
@@ -17,7 +17,7 @@ func initQueue(queue *Queue) {
   queue.tail = nil
 }
 
-func enqueue(queue *Queue, value int) {
+func enqueue(queue *Queue, value string) {
   newNode := &Node{value, nil}
   if queue.head == nil {
     newNode.next = queue.head
@@ -43,7 +43,7 @@ func dequeue(queue *Queue) {
 func print(queue *Queue) {
   current := queue.head
   for current != nil {
-    fmt.Printf("%d ", current.value)
+    fmt.Printf("%s ", current.value)
     current = current.next
   }
   fmt.Println()

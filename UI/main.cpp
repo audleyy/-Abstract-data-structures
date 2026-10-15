@@ -28,6 +28,7 @@ struct Query {
   string name;
   int number = 0;
   int number2 = 0;
+  string value;
   bool reverse = false;
 };
 
@@ -75,6 +76,17 @@ bool readNumber(istream& input, int& number) {
   return !(value >> extra);
 }
 
+bool readToken(istream& input, string& token) {
+  return static_cast<bool>(input >> token);
+}
+
+bool firstArgumentIsNumber(const string& command) {
+  if (command.empty()) return true;
+  string operation = command.substr(1);
+  if (operation == "PUSH" || operation == "PUSHHEAD" || operation == "SEARCH") return false;
+  return true;
+}
+
 bool parseQuery(const string& text, Query& query) {
   query = Query{};
   istringstream input(text);
@@ -82,8 +94,14 @@ bool parseQuery(const string& text, Query& query) {
 
   int count = argumentCount(query.command);
   if (count == -1) return false;
-  if (count >= 1 && !readNumber(input, query.number)) return false;
-  if (count == 2 && !readNumber(input, query.number2)) return false;
+  if (count >= 1) {
+    if (firstArgumentIsNumber(query.command)) {
+      if (!readNumber(input, query.number)) return false;
+    } else {
+      if (!readToken(input, query.value)) return false;
+    }
+  }
+  if (count == 2 && !readToken(input, query.value)) return false;
 
   string extra;
   if (query.command == "PRINT" && (input >> extra)) {
@@ -100,7 +118,7 @@ bool canCreate(const string& command) {
        command == "QPUSH" || command == "SPUSH" || command == "TINSERT";
 }
 
-bool readFile(const string& filename, const Query& query, vector<string>& lines, vector<int>& values, int& position, char& type, string& treeData) {
+bool readFile(const string& filename, const Query& query, vector<string>& lines, vector<string>& values, int& position, char& type, string& treeData) {
   position = -1;
   type = query.command == "PRINT" ? '\0' : query.command[0];
   ifstream input(filename);
@@ -120,11 +138,8 @@ bool readFile(const string& filename, const Query& query, vector<string>& lines,
       if (type == 'T') {
         getline(row, treeData);
       } else {
-        while (row >> ws && !row.eof()) {
-          int value;
-          if (!readNumber(row, value)) return false;
-          values.push_back(value);
-        }
+        string value;
+        while (row >> value) values.push_back(value);
       }
     }
     lines.push_back(line);
@@ -146,13 +161,13 @@ bool readTree(istream& input, red_black_tree::Node*& root) {
   }
   istringstream number(token);
   int value;
-  if (!readNumber(number, value)) return false;
+  if (!(number >> value)) return false;
   if (!(input >> color) || (color != "R" && color != "B")) return false;
   root = new red_black_tree::Node{value, color == "R", nullptr, nullptr};
   return readTree(input, root->left) && readTree(input, root->right);
 }
 
-bool loadStructure(char type, const vector<int>& values, const string& treeData) {
+bool loadStructure(char type, const vector<string>& values, const string& treeData) {
 
   if (type == 'T') {
     istringstream check(treeData);
@@ -169,19 +184,21 @@ bool loadStructure(char type, const vector<int>& values, const string& treeData)
     istringstream oldData(treeData);
     while (oldData >> ws && !oldData.eof()) {
       int value;
-      if (!readNumber(oldData, value)) return false;
+      string token;
+      if (!(oldData >> token)) break;
+      istringstream number(token);
+      if (!(number >> value)) return false;
       red_black_tree::insert(treeRoot, value);
     }
     return true;
   }
 
   if (type == 'S') {
-
     for (int i = static_cast<int>(values.size()) - 1; i >= 0; --i)
       ::stack::push(&currentStack, values[i]);
     return true;
   }
-  for (int value : values) {
+  for (const string& value : values) {
     switch (type) {
       case 'M': dynamic_array::pushBack(currentArray, value); break;
       case 'F': singly_linked_list::addToTail(forwardHead, value); break;
@@ -212,11 +229,11 @@ bool executeArray(const Query& query, bool& changed) {
   const string& command = query.command;
   int index = query.number;
   if (command == "MPUSH") {
-    pushBack(currentArray, query.number);
+    pushBack(currentArray, query.value);
     changed = true;
   } else if (command == "MPUSHINDEX") {
     if (index < 0 || index > currentArray.size) return false;
-    pushIndex(currentArray, index, query.number2);
+    pushIndex(currentArray, index, query.value);
     changed = true;
   } else if (command == "MLEN") {
     cout << length(currentArray) << '\n';
@@ -224,8 +241,8 @@ bool executeArray(const Query& query, bool& changed) {
     if (index < 0 || index >= currentArray.size) return false;
     if (command == "MGET") cout << get(currentArray, index) << '\n';
     else if (command == "MSET") {
-      changed = currentArray.data[index] != query.number2;
-      replace(currentArray, index, query.number2);
+      changed = currentArray.data[index] != query.value;
+      replace(currentArray, index, query.value);
     } else {
       remove(currentArray, index);
       changed = true;
@@ -238,10 +255,10 @@ bool executeForwardList(const Query& query, bool& changed) {
   using namespace singly_linked_list;
 
   const string& command = query.command;
-  if (command == "FPUSH") addToTail(forwardHead, query.number);
-  else if (command == "FPUSHHEAD") addToHead(forwardHead, query.number);
+  if (command == "FPUSH") addToTail(forwardHead, query.value);
+  else if (command == "FPUSHHEAD") addToHead(forwardHead, query.value);
   else if (command == "FSEARCH") {
-    auto found = findNode(forwardHead, query.number);
+    auto found = findNode(forwardHead, query.value);
     int index = 0;
     for (auto node = forwardHead; node != found && node != nullptr; node = node->next) ++index;
     cout << (found ? index : -1) << '\n';
@@ -257,8 +274,8 @@ bool executeForwardList(const Query& query, bool& changed) {
       printIndex(forwardHead, query.number);
       return true;
     }
-    if (command == "FPUSHBEFORE") addBefore(forwardHead, node, query.number2);
-    else if (command == "FPUSHAFTER") addAfter(node, query.number2);
+    if (command == "FPUSHBEFORE") addBefore(forwardHead, node, query.value);
+    else if (command == "FPUSHAFTER") addAfter(node, query.value);
     else if (command == "FDELBEFORE") {
       if (node == forwardHead) return false;
       deleteBefore(forwardHead, node);
@@ -276,10 +293,10 @@ bool executeDoublyLinkedList(const Query& query, bool& changed) {
   using namespace doubly_linked_list;
 
   const string& command = query.command;
-  if (command == "LPUSH") addTail(&currentList, query.number);
-  else if (command == "LPUSHHEAD") addHead(&currentList, query.number);
+  if (command == "LPUSH") addTail(&currentList, query.value);
+  else if (command == "LPUSHHEAD") addHead(&currentList, query.value);
   else if (command == "LSEARCH") {
-    auto found = findNode(currentList.head, query.number);
+    auto found = findNode(currentList.head, query.value);
     int index = 0;
     for (auto node = currentList.head; node != found && node != nullptr; node = node->next) ++index;
     cout << (found ? index : -1) << '\n';
@@ -295,8 +312,8 @@ bool executeDoublyLinkedList(const Query& query, bool& changed) {
       printIndex(&currentList, query.number);
       return true;
     }
-    if (command == "LPUSHBEFORE") addBefore(&currentList, node, query.number2);
-    else if (command == "LPUSHAFTER") addAfter(&currentList, node, query.number2);
+    if (command == "LPUSHBEFORE") addBefore(&currentList, node, query.value);
+    else if (command == "LPUSHAFTER") addAfter(&currentList, node, query.value);
     else if (command == "LDELBEFORE") {
       if (node->prev == nullptr) return false;
       delBefore(&currentList, node);
@@ -316,7 +333,7 @@ bool executeDoublyLinkedList(const Query& query, bool& changed) {
 }
 
 bool executeQueue(const Query& query, bool& changed) {
-  if (query.command == "QPUSH") ::queue::enqueue(&currentQueue, query.number);
+  if (query.command == "QPUSH") ::queue::enqueue(&currentQueue, query.value);
   else {
     if (currentQueue.head == nullptr) return false;
 
@@ -332,7 +349,7 @@ bool executeStack(const Query& query, bool& changed) {
     cout << (::stack::isEmpty(&currentStack) ? "TRUE\n" : "FALSE\n");
     return true;
   }
-  if (query.command == "SPUSH") ::stack::push(&currentStack, query.number);
+  if (query.command == "SPUSH") ::stack::push(&currentStack, query.value);
   else {
     if (::stack::isEmpty(&currentStack)) return false;
     ::stack::pop(&currentStack);
@@ -447,15 +464,19 @@ void clearStructures() {
   treeRoot = nullptr;
 }
 
-void printResult(const Query& query, bool changed, int removedValue) {
+void printResult(const Query& query, bool changed, const string& removedValue) {
   string operation = query.command.substr(1);
   if (query.command == "QPOP" || query.command == "SPOP") {
     cout << removedValue << '\n';
-  } else if (operation == "PUSH" || operation == "PUSHHEAD" || operation == "INSERT") {
-    cout << query.number << '\n';
-  } else if (operation == "PUSHINDEX" || operation == "SET" ||
-         operation == "PUSHBEFORE" || operation == "PUSHAFTER") {
-    cout << query.number2 << '\n';
+  } else if (query.command == "TINSERT" || query.command == "TGET" || query.command == "TDEL") {
+    if (query.command == "TINSERT") cout << query.number << '\n';
+  } else if (operation == "PUSH" || operation == "PUSHHEAD" || operation == "PUSHINDEX" ||
+         operation == "SET" || operation == "PUSHBEFORE" || operation == "PUSHAFTER") {
+    if (operation == "PUSH" || operation == "PUSHHEAD") cout << query.value << '\n';
+    else if (operation == "PUSHINDEX" || operation == "SET" ||
+             operation == "PUSHBEFORE" || operation == "PUSHAFTER") {
+      cout << query.value << '\n';
+    }
   } else if (changed) cout << "OK\n";
 }
 
@@ -471,7 +492,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
   vector<string> lines;
-  vector<int> values;
+  vector<string> values;
   int position;
   char type;
   string treeData;
@@ -485,7 +506,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  int removedValue = 0;
+  string removedValue;
   if (query.command == "QPOP" && currentQueue.head != nullptr) removedValue = currentQueue.head->value;
   if (query.command == "SPOP" && currentStack.head != nullptr) removedValue = currentStack.head->value;
 

@@ -3,7 +3,7 @@ package stack
 import "fmt"
 
 type Node struct {
-  value int
+  value string
   next  *Node
 }
 
@@ -19,7 +19,7 @@ func isEmpty(stack *Stack) bool {
   return stack.head == nil
 }
 
-func push(stack *Stack, value int) {
+func push(stack *Stack, value string) {
   newNode := &Node{value, nil}
   newNode.next = stack.head
   stack.head = newNode
@@ -36,7 +36,7 @@ func pop(stack *Stack) {
 func print(stack *Stack) {
   current := stack.head
   for current != nil {
-    fmt.Printf("%d ", current.value)
+    fmt.Printf("%s ", current.value)
     current = current.next
   }
   fmt.Println()

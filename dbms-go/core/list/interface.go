@@ -16,10 +16,10 @@ func nodeAt(list *List, index int) *Node {
   return current
 }
 
-func Execute(command string, number int, number2 int, reverse bool, values []int) ([]int, string, bool, error) {
+func Execute(command string, number int, value string, reverse bool, values []string) ([]string, string, bool, error) {
   list := List{}
-  for _, value := range values {
-    addTail(&list, value)
+  for _, item := range values {
+    addTail(&list, item)
   }
   changed := false
   result := ""
@@ -32,18 +32,15 @@ func Execute(command string, number int, number2 int, reverse bool, values []int
       printRegular(&list)
     }
   case "LPUSH":
-    addTail(&list, number)
+    addTail(&list, value)
     changed = true
-    result = fmt.Sprint(number)
+    result = value
   case "LPUSHHEAD":
-    addHead(&list, number)
+    addHead(&list, value)
     changed = true
-    result = fmt.Sprint(number)
+    result = value
   case "LSEARCH":
-    var found *Node
-    if list.head != nil {
-      found = findNode(list.head, number)
-    }
+    found := findNode(list.head, value)
     index := -1
     if found != nil {
       index = 0
@@ -71,13 +68,13 @@ func Execute(command string, number int, number2 int, reverse bool, values []int
     case "LGET":
       printIndex(&list, number)
     case "LPUSHBEFORE":
-      addBefore(&list, nodeFound, number2)
+      addBefore(&list, nodeFound, value)
       changed = true
-      result = fmt.Sprint(number2)
+      result = value
     case "LPUSHAFTER":
-      addAfter(&list, nodeFound, number2)
+      addAfter(&list, nodeFound, value)
       changed = true
-      result = fmt.Sprint(number2)
+      result = value
     case "LDEL":
       if nodeFound == list.head {
         delHead(&list)
@@ -103,7 +100,7 @@ func Execute(command string, number int, number2 int, reverse bool, values []int
       return nil, "", false, errors.New("неизвестная команда списка")
     }
   }
-  saved := []int{}
+  saved := []string{}
   for current := list.head; current != nil; current = current.next {
     saved = append(saved, current.value)
   }

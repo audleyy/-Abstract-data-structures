@@ -7,7 +7,7 @@ void initQueue(Queue* queue) {
 	queue->tail = nullptr;
 }
 
-void enqueue(Queue* queue, int value) {
+void enqueue(Queue* queue, const string& value) {
 	Node* newNode = new Node{value, nullptr};
 	if (queue->head == nullptr) {
 		newNode->next = queue->head;
