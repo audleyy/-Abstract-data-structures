@@ -1,16 +1,31 @@
-#include <iostream>
+#include "BRTree.h"
 
-using namespace std;
-
-struct Node {
-	int value;
-	bool isRed;
-	Node* left;
-	Node* right;
-};
+namespace red_black_tree {
 
 bool isRed(Node* root) {
 	return root != nullptr && root->isRed;
+}
+
+void rotateRight(Node* &root) {
+	if (root == nullptr || root->left == nullptr) return;
+
+	Node* newRoot = root->left;
+	Node* subtree = newRoot->right;
+
+	newRoot->right = root;
+	root->left = subtree;
+	root = newRoot;
+}
+
+void rotateLeft(Node* &root) {
+	if (root == nullptr || root->right == nullptr) return;
+
+	Node* newRoot = root->right;
+	Node* subtree =	newRoot->left;
+
+	newRoot->left = root;
+	root->right = subtree;
+	root = newRoot;
 }
 
 void balance(Node* &root) {
@@ -66,28 +81,6 @@ void insertRecursive(Node*& root, int value) {
 void insert(Node* &root, int value) {
 	insertRecursive(root, value);
 	root->isRed = false;
-}
-
-void rotateRight(Node* &root) {
-	if (root == nullptr || root->left == nullptr) return;
-
-	Node* newRoot = root->left;
-	Node* subtree = newRoot->right;
-
-	newRoot->right = root;
-	root->left = subtree;
-	root = newRoot;
-}
-
-void rotateLeft(Node* &root) {
-	if (root == nullptr || root->right == nullptr) return;
-
-	Node* newRoot = root->right;
-	Node* subtree =	newRoot->left;
-
-	newRoot->left = root;
-	root->right = subtree;
-	root = newRoot;
 }
 
 bool balanceAfterDeleteLeft(Node*& root) {
@@ -254,4 +247,6 @@ void printTree(Node* root) {
 	cout << root->value << (root->isRed ? "(R) " : "(B) ");
 
 	printTree(root->right);
+}
+
 }

@@ -1,11 +1,6 @@
-#include <iostream>
+#include "forwardList.h"
 
-using namespace std;
-
-struct Node {
-	int value;
-	Node* next;
-};
+namespace singly_linked_list {
 
 void addToHead(Node* &head, int value) {
 	Node* newNode = new Node{value, nullptr};
@@ -166,4 +161,6 @@ void printIndex(Node* head, int index) {
 	}
 
 	cout << current->value << endl;
+}
+
 }

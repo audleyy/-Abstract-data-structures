@@ -1,17 +1,6 @@
-#include <iostream>
+#include "list.h"
 
-using namespace std;
-
-struct Node {
-	int value;
-	Node* next;
-	Node* prev;
-};
-
-struct List {
-	Node* head;
-	Node* tail;
-};
+namespace doubly_linked_list {
 
 void addTail(List* list, int value) {
 	Node* newNode = new Node{value, nullptr, nullptr};
@@ -160,10 +149,13 @@ void printRegular(List* list) {
 }
 
 void printReverse(List* list) {
-	printReverse(list);
-	Node* current = list->head;
+  if (list == nullptr) return;
 
-	cout << current->value << " ";
+  Node* current = list->tail;
+  while (current != nullptr) {
+    cout << current->value << " ";
+    current = current->prev;
+  }
 }
 
 void printIndex(List* list, int index) {
@@ -173,4 +165,7 @@ void printIndex(List* list, int index) {
 	}
 
 	cout << current->value << endl;
+}
+
+
 }

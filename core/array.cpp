@@ -1,11 +1,6 @@
-#include <iostream>
+#include "array.h"
 
-using namespace std;
-
-struct Array {
-	int* data;
-	int size;
-};
+namespace dynamic_array {
 
 void initArray(Array& arr) {
 	arr.data = nullptr;
@@ -92,6 +87,4 @@ void print(Array arr) {
 	cout << endl;
 }
 
-int main() {
-	return 0;
 }

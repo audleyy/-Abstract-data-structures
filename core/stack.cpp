@@ -1,15 +1,6 @@
-#include <iostream>
+#include "stack.h"
 
-using namespace std;
-
-struct Node {
-	int value;
-	Node* next;
-};
-
-struct Stack {
-	Node* head;
-};
+namespace stack {
 
 void initStack(Stack* stack) {
 	stack->head = nullptr;
@@ -46,3 +37,4 @@ void print(Stack* stack) {
 	cout << endl;
 }
 
+}

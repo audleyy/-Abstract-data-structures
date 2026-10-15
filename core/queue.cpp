@@ -1,16 +1,6 @@
-#include <iostream>
+#include "queue.h"
 
-using namespace std;
-
-struct Node {
-	int value;
-	Node* next;
-};
-
-struct Queue {
-	Node* head;
-	Node* tail;
-};
+namespace queue {
 
 void initQueue(Queue* queue) {
 	queue->head = nullptr;
@@ -52,4 +42,6 @@ void print(Queue* queue) {
 	}
 
 	cout << endl;
+}
+
 }
