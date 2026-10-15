@@ -240,13 +240,11 @@ Node* searchElement(Node* root, int val) {
 }
 
 void printTree(Node* root) {
-	if (root == nullptr) return;
+  if (root == nullptr) return;
 
-	printTree(root->left);
-
-	cout << root->value << (root->isRed ? "(R) " : "(B) ");
-
-	printTree(root->right);
+  cout << root->value << (root->isRed ? "(R) " : "(B) ");
+  printTree(root->left);
+  printTree(root->right);
 }
 
 void init(Node* &root) {
