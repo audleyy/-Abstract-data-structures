@@ -467,7 +467,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
   if (!parseQuery(text, query)) {
-    cerr << "Неизвестная команда или неверные аргументы.\n";
+    cerr << "Неизвестная команда или неверные аргументы\n";
     return 1;
   }
   vector<string> lines;
@@ -476,12 +476,12 @@ int main(int argc, char* argv[]) {
   char type;
   string treeData;
   if (!readFile(filename, query, lines, values, position, type, treeData)) {
-    cerr << "Ошибка чтения: проверь файл, имя и тип структуры.\n";
+    cerr << "Ошибка чтения\n";
     return 1;
   }
   if (!loadStructure(type, values, treeData)) {
     clearStructures();
-    cerr << "Некорректные данные структуры в файле.\n";
+    cerr << "Некорректные данные структуры в файле\n";
     return 1;
   }
 
@@ -496,7 +496,7 @@ int main(int argc, char* argv[]) {
   clearStructures();
 
   if (!success) {
-    cerr << "Ошибка операции или записи файла.\n";
+    cerr << "Ошибка операции или записи файла\n";
     return 1;
   }
   printResult(query, changed, removedValue);
